@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.28;
+
+contract GiveMeTheMoney {
+  
+  // event to emit when a memo is created.
+  event NewMemo(
+    address indexed from,
+    uint256 timestamp,
+    string name,
+    string message  
+  );
+
+  // memo struct
+  struct Memo {
+    address from;
+    uint256 timestamp;
+    string name;
+    string message; 
+  }
+
+  // list of all received memos.
+  Memo[] memos;
+
+  // address of contract deployer.
+  address payable owner;
+
+  // deploy logic - executes only once
+  constructor() {
+    owner = payable(msg.sender);
+  }
+
+  /**
+   * @dev give the money to the owner 
+   * @param _name name of giver
+   * @param _message message from giver
+  */
+  function giveTheMoney(string memory _name, string memory _message) public payable {
+     require(msg.value > 0, "cannot give nothing (need more than 0 eth)");
+     // add memo to the storage
+     memos.push(Memo(
+      msg.sender,
+      block.timestamp,
+      _name,
+      _message
+    ));
+    // emit event
+    emit NewMemo(
+      msg.sender,
+      block.timestamp,
+      _name,
+      _message
+    ); 
+  }
+}
