@@ -52,4 +52,18 @@ contract GiveMeTheMoney {
       _message
     ); 
   }
+
+  /**
+   * @dev Withdraw the money stored in contract
+  */
+  function withdrawTheMoney() public {
+    require(owner.send(address(this).balance));
+  }
+
+  /**
+   * @dev retrieve all stored memos
+   */
+  function getMemos() public view returns(Memo[] memory) {
+    return memos; 
+  }
 }
