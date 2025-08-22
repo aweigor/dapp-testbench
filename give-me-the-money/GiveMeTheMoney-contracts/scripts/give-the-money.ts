@@ -1,7 +1,4 @@
-import helpers from "@nomicfoundation/hardhat-network-helpers";
 import { Addressable } from "ethers";
-
-require("@nomicfoundation/hardhat-ethers");
 import hre from "hardhat";
 
 interface Memo {
@@ -12,8 +9,8 @@ interface Memo {
 }
 
 const { ethers } = await hre.network.connect({
-  network: "sepolia",
-  chainType: "l1",
+  network: "hardhatOp",
+  chainType: "op",
 });
 
 async function getBalance(address: string) {
@@ -43,7 +40,7 @@ async function main() {
   // get contract and deploy
   const GiveMeTheMoney = await ethers.getContractFactory("GiveMeTheMoney");
   const giveMeTheMoney = await GiveMeTheMoney.deploy();
-  await giveMeTheMoney.deployed();
+  await giveMeTheMoney.waitForDeployment();
   const contractAddress = await giveMeTheMoney.getAddress();
   console.log("contract deployed to ", contractAddress);
 
