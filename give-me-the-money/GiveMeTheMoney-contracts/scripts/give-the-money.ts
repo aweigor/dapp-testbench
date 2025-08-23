@@ -46,10 +46,30 @@ async function main() {
 
   // check balances
   const addresses = [owner.address, tipper1.address, contractAddress];
-  console.log("check address start");
+  console.log("*** initial balances ***");
   await printBalances(addresses);
 
-  //
+  // give the owner some money
+  const tip = { value: ethers.parseEther("1") };
+  await giveMeTheMoney.connect(tipper1).giveTheMoney("Garry", "Sorry", tip);
+  await giveMeTheMoney.connect(tipper2).giveTheMoney("Elona", "Thank you", tip);
+  await giveMeTheMoney.connect(tipper3).giveTheMoney("Kenny", "haha", tip);
+
+  // check balances
+  console.log("*** money received balances ***");
+  await printBalances(addresses);
+
+  // widthdraw money
+  await giveMeTheMoney.connect(owner).withdrawTheMoney();
+
+  // check balances
+  console.log("*** money withdrawed ***");
+  await printBalances(addresses);
+
+  // read memos
+  console.log("*** memos ***");
+  const memos = await giveMeTheMoney.getMemos();
+  printMemos(memos);
 }
 
 main()
