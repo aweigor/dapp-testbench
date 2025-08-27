@@ -8,6 +8,7 @@ import { config as c } from "dotenv";
 c();
 
 const config: HardhatUserConfig = {
+  
   plugins: [hardhatToolboxMochaEthersPlugin],
   solidity: {
     profiles: {
