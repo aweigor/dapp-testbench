@@ -1,0 +1,7 @@
+<svg width="300" preserveAspectRatio="xMinYMin" viewBox="0 0 350 350">
+<style>.base { fill: white; } </style>
+  <rect width="200" height="100" x="10" y="10" rx="20" ry="20" fill="black" />
+  <text x="50%" y="40%" class="base" dominant-baseline="middle" text-anchor="middle">Warrior</text>
+  <text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">Level</text>
+
+</svg>
