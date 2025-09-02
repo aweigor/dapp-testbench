@@ -41,8 +41,7 @@ contract ChainBattles is ERC721URIStorage {
     return levels.toString();
   }
 
-  function getTokenUri(uint256 tokenId) public returns (string memory) {
-    
+  function getTokenUri(uint256 tokenId) public view returns (string memory) {
     bytes memory dataURI = abi.encodePacked(
       '{', 
         '"name": "NAME"', tokenId.toString(), '","',
