@@ -50,12 +50,12 @@ export function FetchNFTsForm({ apiKey }) {
       PROCEDURE_FOR_COLLECTION,
       collection.length
         ? {
-            conteractAddress: wallet,
+            contractAddress: wallet,
             withMetadata: "true",
             pageSize: PAGE_SIZE,
           }
         : {
-            conteractAddress: collection,
+            contractAddress: collection,
             owner: wallet,
             pageSize: PAGE_SIZE,
           }
