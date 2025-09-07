@@ -108,6 +108,11 @@ export function FetchNFTsForm({ apiKey }) {
           Let's go!
         </button>
       </div>
+      <div>
+        {nfts.map((nft) => (
+          <NftCard nft={nft} />
+        ))}
+      </div>
     </div>
   );
 }
