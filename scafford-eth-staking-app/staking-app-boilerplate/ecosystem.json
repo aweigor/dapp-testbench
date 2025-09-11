@@ -1,0 +1,22 @@
+{
+  "apps": [
+    {
+      "name": "chain",
+      "cwd": "./",
+      "script": "yarn",
+      "args": "chain"
+    },
+    {
+      "name": "",
+      "cwd": "./",
+      "script": "yarn",
+      "args": "deploy"
+    },
+    {
+      "name": "web",
+      "cwd": "./",
+      "script": "yarn",
+      "args": "start"
+    }
+  ]
+}
