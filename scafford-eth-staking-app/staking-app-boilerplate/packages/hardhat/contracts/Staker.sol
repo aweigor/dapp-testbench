@@ -17,14 +17,36 @@ contract Staker {
     uint256 public claimDeadline = block.timestamp + 240 seconds;
     uint256 public currentBlock = 0;
 
-
     // Events
     event Stake(address indexed sender, uint256 amount);
     event Received(address, uint);
     event Execute(address indexed sender, uint256 amount);
 
+    modifier withdrawalDeadlineReached(bool requireReached) {
+        uint256 timeRemaining = withdrawalTimeLeft();
+        if (requireReached) {
+            require(timeRemaining == 0, "Withdrawal period is not reached yet.");
+        } else {
+            require(timeRemaining > 0, "Withdrawal period has been reached.");
+        }
+        _;
+    }
 
-    
+    modifier claimDeadlineReached(bool requireReached) {
+        uint256 timeRemaining = withdrawalTimeLeft();
+        if (requireReached) {
+            require(timeRemaining == 0, "Withdrawal period is not reached yet.");
+        } else {
+            require(timeRemaining > 0, "Withdrawal period has been reached.");
+        }
+        _;
+    }
+
+    modifier notCompleted(bool requireReached) {
+        bool completed = exampleExternalContract.completed();
+        require(!completed, "Stake already completed.");
+        _;
+    }
 
     constructor(address exampleExternalContractAddress) {
         exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
