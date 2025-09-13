@@ -16,6 +16,7 @@ contract Staker {
     uint256 public withdrawalDeadline = block.timestamp + 120 seconds;
     uint256 public claimDeadline = block.timestamp + 240 seconds;
     uint256 public currentBlock = 0;
+    uint256 public rewardRatePerBlock = 1;
 
     // Events
     event Stake(address indexed sender, uint256 amount);
@@ -68,12 +69,29 @@ contract Staker {
         }
     }
 
-    // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
-    // (Make sure to add a `Stake(address,uint256)` event and emit it for the frontend `All Stakings` tab to display)
-    // function stake() public {
-        
-    // }
+     
+    
+    function stake() public payable withdrawalDeadlineReached(false) claimDeadlineReached(false) {
+        // Collect funds in a payable `stake()` function
+        balances[msg. sender] = balances[msg.sender] + msg.value;
+        // and track individual `balances` with a mapping:
+        depositTimestamps [msg.sender] = block. timestamp;
+        // (Make sure to add a `Stake(address,uint256)` event and emit it for the frontend `All Stakings` tab to display)
+        emit Stake(msg. sender, msg. value);
+    }
 
+    /*
+    Withdraw function
+    */
+    function withdraw() public withdrawalDeadlineReached(true) claimDeadlineReached(false) notCompleted(false) {
+        require (balances[msg.sender] > 0, "You have no balance to withdraw!");
+        uint256 individualBalance = balances[msg. sender];
+        uint256 indBalanceRewards = individualBalance + ((block.timestamp - depositTimestamps[msg.sender]) * rewardRatePerBlock);
+        balances[msg.sender] = 0;
+        //Transfer all ETH via call! (not transfer) cc: https://solidity-by-example.org/sendir
+        (bool sent, bytes memory data) = msg.sender.call{value: indBalanceRewards}("");
+        require(sent, "RIP; withdrawal failed!");
+    }
     
     // After some `deadline` allow anyone to call an `execute()` function
     // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
