@@ -73,32 +73,43 @@ contract Staker {
     
     function stake() public payable withdrawalDeadlineReached(false) claimDeadlineReached(false) {
         // Collect funds in a payable `stake()` function
-        balances[msg. sender] = balances[msg.sender] + msg.value;
+        balances[msg.sender] = balances[msg.sender] + msg.value;
         // and track individual `balances` with a mapping:
-        depositTimestamps [msg.sender] = block. timestamp;
+        depositTimestamps[msg.sender] = block.timestamp;
         // (Make sure to add a `Stake(address,uint256)` event and emit it for the frontend `All Stakings` tab to display)
-        emit Stake(msg. sender, msg. value);
+        emit Stake(msg.sender, msg.value);
+    }
+
+    // After some `deadline` allow anyone to call an `execute()` function
+    // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
+    function execute() public payable withdrawalDeadlineReached(true) {
+        // Collect funds in a payable `stake()` function
+        balances[msg.sender] = balances[msg.sender] + msg.value;
+        // and track individual `balances` with a mapping:
+        depositTimestamps[msg.sender] = block.timestamp;
+        // (Make sure to add a `Stake(address,uint256)` event and emit it for the frontend `All Stakings` tab to display)
+        emit Stake(msg.sender, msg.value);
     }
 
     /*
     Withdraw function
+    If the `threshold` was not met, allow everyone to call a `withdraw()` function to withdraw their balance
     */
     function withdraw() public withdrawalDeadlineReached(true) claimDeadlineReached(false) notCompleted(false) {
         require (balances[msg.sender] > 0, "You have no balance to withdraw!");
-        uint256 individualBalance = balances[msg. sender];
+        uint256 individualBalance = balances[msg.sender];
         uint256 indBalanceRewards = individualBalance + ((block.timestamp - depositTimestamps[msg.sender]) * rewardRatePerBlock);
         balances[msg.sender] = 0;
         //Transfer all ETH via call! (not transfer) cc: https://solidity-by-example.org/sendir
         (bool sent, bytes memory data) = msg.sender.call{value: indBalanceRewards}("");
         require(sent, "RIP; withdrawal failed!");
     }
+
     
-    // After some `deadline` allow anyone to call an `execute()` function
-    // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
-
-    // If the `threshold` was not met, allow everyone to call a `withdraw()` function to withdraw their balance
-
-    // Add a `timeLeft()` view function that returns the time left before the deadline for the frontend
-
     // Add the `receive()` special function that receives eth and calls stake()
+    receive() external payable {
+
+        emit Stake(msg.sender, msg.value);
+        emit Received(msg.sender, msg.value);
+    }
 }
