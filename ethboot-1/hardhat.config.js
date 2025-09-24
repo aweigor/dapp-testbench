@@ -30,16 +30,5 @@ module.exports = {
         mnemonic: "test test test test test test test test test test test junk",
       },
     },
-    "optimistic-kovan": {
-      url: "https://kovan.optimism.io",
-      accounts: { mnemonic: process.env.MNEMONIC },
-    },
-    optimism: {
-      url: "https://mainnet.optimism.io",
-      accounts: { mnemonic: process.env.MNEMONIC },
-    },
   },
-  /*
-  
-*/
 };
