@@ -2,6 +2,14 @@
   "name": "ethboot-1",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "run": "hardhat node",
+    "build": "npx hardhat build",
+    "test": "npx hardhat test",
+    "solidity": "npx hardhat test solidity",
+    "console": "npx hardhat console --network localhost",
+    "deploy": "npx hardhat ignition deploy --network localhost ignition/modules/Messenger.ts"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.3",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
