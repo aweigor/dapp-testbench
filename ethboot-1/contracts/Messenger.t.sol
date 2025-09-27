@@ -10,4 +10,8 @@ contract CounterTest is Test {
   function setUp() public {
     messenger = new Messenger();
   }
+
+  function test_InitialValue() public view {
+    require(messenger.changeCounter() == 0, "Initial value of counter should be 0");
+  }
 }
