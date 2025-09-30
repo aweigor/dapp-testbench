@@ -43,7 +43,7 @@ contract SendWithdrawMoneyTest is Test {
 
   function test_Deposit() public view {
     sendWithdrawMoney.deposit{value: 1 ether};
-    require(sendWithdrawMoney.getContractBalance() == 1, "Initial value of counter should be 0");
+    require(sendWithdrawMoney.getContractBalance() == 1, "Balace must be equal to deposit value");
   }
 
   function test_WithdrawAll() public {
