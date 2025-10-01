@@ -13,7 +13,11 @@ describe("SendWithdrawMoney", async function () {
     transport: http(),
   });
 
-  it("Should do something...", async function () {
-    // todo: test
+  it("Should show deposited value on the balance", async function () {
+    const contract = await viem.deployContract("SendWithdrawMoney");
+
+    await contract.write.deposit({ value: 1000n });
+
+    assert.equal(1000n, await contract.read.getContractBalance());
   });
 });

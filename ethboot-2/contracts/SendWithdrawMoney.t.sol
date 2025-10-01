@@ -7,7 +7,7 @@ import {SendWithdrawMoney} from "./SendWithdrawMoney.sol";
 contract SendWithdrawMoneyUser {
   SendWithdrawMoney sendWithdrawMoney;
 
-  constructor(SendWithdrawMoney sendWithdrawMoney_) public {
+  constructor(SendWithdrawMoney sendWithdrawMoney_) {
     sendWithdrawMoney = sendWithdrawMoney_;
   }
 
@@ -18,18 +18,20 @@ contract SendWithdrawMoneyUser {
   function withdrawAll() public {
     sendWithdrawMoney.withdrawAll();
   }
+
+  receive() external payable {}
 }
 
 contract SendWithdrawMoneyTest is Test {
   SendWithdrawMoney sendWithdrawMoney;
-  address user1;
-  address user2;
+  address payable user1;
+  address payable user2;
   address payable self;
 
   function setUp() public {
     sendWithdrawMoney = createContract();
-    user1 = address(new SendWithdrawMoneyUser(sendWithdrawMoney));
-    user2 = address(new SendWithdrawMoneyUser(sendWithdrawMoney));
+    user1 = payable(address(new SendWithdrawMoneyUser(sendWithdrawMoney)));
+    user2 = payable(address(new SendWithdrawMoneyUser(sendWithdrawMoney)));
     self = payable(address(this));
   }
 
@@ -41,22 +43,22 @@ contract SendWithdrawMoneyTest is Test {
     require(sendWithdrawMoney.balanceReceived() == 0, "Initial value of counter should be 0");
   }
 
-  function test_Deposit() public view {
-    sendWithdrawMoney.deposit{value: 1 ether};
-    require(sendWithdrawMoney.getContractBalance() == 1, "Balace must be equal to deposit value");
+  function test_Deposit() public {
+    sendWithdrawMoney.deposit{value: 1 ether}();
+    assertEq(sendWithdrawMoney.balanceReceived(), 1 ether);
   }
 
   function test_WithdrawAll() public {
-    sendWithdrawMoney.deposit{value: 1 ether};
-    SendWithdrawMoneyUser(user1).withdrawAll();
-    SendWithdrawMoneyUser(user2).withdrawAll();
-    require(SendWithdrawMoneyUser(user1).getUserBalance() == 1, "First user wthdraws all value");
-    require(SendWithdrawMoneyUser(user2).getUserBalance() == 0, "Sencond user has empty withdrawal value");
+    sendWithdrawMoney.deposit{value: 1 ether}();
+    SendWithdrawMoney(user1).withdrawAll();
+    SendWithdrawMoney(user2).withdrawAll();
+    require(SendWithdrawMoneyUser(user1).getUserBalance() == 1 ether, "First user wthdraws all value");
+    require(SendWithdrawMoneyUser(user2).getUserBalance() == 0 ether, "Sencond user has empty withdrawal value");
   }
 
   function test_WithdrawToAddress() public {
-    sendWithdrawMoney.deposit{value: 1 ether};
-    sendWithdrawMoney.withdrawToAddress(self);
-    require(self.balance == 1, "Value withdraws to specified address");
+    sendWithdrawMoney.deposit{value: 1 ether}();
+    sendWithdrawMoney.withdrawToAddress(user1);
+    assertEq(SendWithdrawMoneyUser(user1).getUserBalance(), 1 ether);
   }
 }
