@@ -9,6 +9,12 @@ contract SampleWalletUser {
   constructor(SampleWallet sampleWallet_) {
     sampleWallet = sampleWallet_;
   }
+
+  function getBalance() public view returns(uint) {
+    return address(this).balance;
+  }
+
+  receive() external payable {}
 }
 
 contract SampleWalletTest is Test {
@@ -50,6 +56,35 @@ contract SampleWalletTest is Test {
     try sampleWallet.setAllowance(user1, 1) {
       assertEq(sampleWallet.allowance(user1), 1);
       assertEq(sampleWallet.isAllowedToSend(user1), true);
+    } catch {
+      fail();
+    }
+  }
+
+  function test_DenySendingTest() public {
+    vm.prank(self);
+    address payable contractAddress = payable(sampleWallet);
+    bool success = contractAddress.send(1 ether);
+    require(success, "Test failed: cannot send funds!");
+    sampleWallet.setAllowance(user1, 1000);
+    sampleWallet.denySending(user1);
+    vm.prank(user1);
+    try sampleWallet.transfer(user2, 100, "") {
+      fail();
+    } catch {
+      assertEq(SampleWalletUser(user2).getBalance(), 0);
+    }
+  }
+
+  function test_Transfer() public {
+    vm.prank(self);
+    address payable contractAddress = payable(sampleWallet);
+    bool success = contractAddress.send(1 ether);
+    require(success, "Test failed: cannot send funds!");
+    sampleWallet.setAllowance(user1, 1000);
+    vm.prank(user1);
+    try sampleWallet.transfer(user2, 100, "") {
+      assertEq(SampleWalletUser(user2).getBalance(), 100);
     } catch {
       fail();
     }

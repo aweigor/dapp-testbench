@@ -50,7 +50,6 @@ contract SampleWallet {
             require(isAllowedToSend[msg.sender], "You are not allowed to send any transactions, aborting");
             require(allowance[msg.sender] >= _amount, "You are trying to send more than you are allowed to, aborting");
             allowance[msg.sender] -= _amount;
- 
         }
  
         (bool success, bytes memory returnData) = _to.call{value: _amount}(payload);
