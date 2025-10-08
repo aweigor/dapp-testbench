@@ -6,6 +6,15 @@ interface IERC20 {
     function transfer(address to, uint amount) external;
     function decimals() external view returns(uint);
 }
+
+abstract contract TokenImplementation is IERC20 {
+    function transfer(address to, uint amount) pure external {
+        payable(to).call{ value: amount };
+    }
+    function decimals() external view returns(uint) {
+
+    }
+}
  
 contract TokenSale {
     uint tokenPriceInWei = 1 ether;
