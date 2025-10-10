@@ -31,6 +31,5 @@ contract TokenSale {
         uint remainder = msg.value - tokensToTransfer * tokenPriceInWei;
         token.transfer(msg.sender, tokensToTransfer * 10 ** token.decimals());
         payable(msg.sender).transfer(remainder); //send the rest back
- 
     }
 }
