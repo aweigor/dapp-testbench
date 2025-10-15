@@ -1,4 +1,6 @@
-## Foundry
+https://www.udemy.com/course/blockchain-developer/
+
+## Foundry sample project
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
